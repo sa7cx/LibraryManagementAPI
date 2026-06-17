@@ -4,7 +4,7 @@ namespace LibraryManagementAPI.Services
 {
     public interface IBookService
     {
-        public Task<IEnumerable<Book>> GetAll();
+        public Task<IEnumerable<Book>> GetAll(int? AuthorId = null , int? CategoryId = null);
         public Task<Book> GetById(int id);
         public Task<Book> Add(Book book);
         public Book Update(Book book);

@@ -14,7 +14,7 @@ namespace LibraryManagementAPI.Controllers
         private readonly IAuthorService _authorService;
         private readonly ICategoryService _categoryService;
 
-        private List<string> _allowedExtentions = new List<string> {".jpg" , ".jpeg" , ".png" };
+        private List<string> _allowedExtentions = new List<string> { ".jpg", ".jpeg", ".png" };
 
         public BookController(IBookService bookService, IAuthorService authorService, ICategoryService categoryService)
         {
@@ -33,7 +33,23 @@ namespace LibraryManagementAPI.Controllers
         public async Task<IActionResult> GetBookById(int id)
         {
             var book = await _bookService.GetById(id);
+            if (book == null)
+            {
+                return NotFound($"Id {id} is not found");
+            }
             return Ok(book);
+        }
+        [HttpGet("byAuthorId/{id}")]
+        public async Task<IActionResult> GetBooksByAuthorId(int id)
+        {
+            var books = await _bookService.GetAll(AuthorId:id);
+            return Ok(books);
+        }
+        [HttpGet("byCategoryId/{id}")]
+        public async Task<IActionResult> GetBooksByCategoryId(int id)
+        {
+            var books = await _bookService.GetAll(CategoryId: id);
+            return Ok(books);
         }
         [HttpPost]
         public async Task<IActionResult> Createbook([FromForm] CreateBookDto dto)

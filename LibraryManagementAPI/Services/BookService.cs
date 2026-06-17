@@ -13,9 +13,12 @@ namespace LibraryManagementAPI.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Book>> GetAll()
+        public async Task<IEnumerable<Book>> GetAll(int? AuthorId = null , int? CategoryId = null)
         {
-            var books = await _context.Books.Select(b => new Book
+            var books =  _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Category)
+                .Select(b => new Book
             {
                 BookID = b.BookID,
                 Title = b.Title,
@@ -27,9 +30,14 @@ namespace LibraryManagementAPI.Services
                 CoverImage = b.CoverImage,
                 Category = b.Category,
                 Author = b.Author
-            }).ToListAsync();
+            }).AsQueryable();
 
-            return books;
+            if(AuthorId.HasValue)
+                books = books.Where(b => b.AuthorID == AuthorId);
+            if(CategoryId.HasValue)
+                books = books.Where(b => b.CategoryID == CategoryId);
+
+            return await books.ToListAsync();
         }
 
         public async Task<Book> GetById(int id)

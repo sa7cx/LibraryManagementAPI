@@ -34,7 +34,7 @@ namespace LibraryManagementAPI.Controllers
             return Ok(category);
         }
         [HttpPost]
-        public async Task<IActionResult> AddCategory (CreatCategoryDto dto)
+        public async Task<IActionResult> AddCategory (CreateCategoryDto dto)
         {
             var category = new Category
             {
@@ -45,7 +45,7 @@ namespace LibraryManagementAPI.Controllers
             return Ok(category);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, CreatCategoryDto dto)
+        public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto dto)
         {
             var category = await _categoryService.GetById(id);
             if (category == null)

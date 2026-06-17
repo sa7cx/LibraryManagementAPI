@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 builder.Services.AddCors(op =>
 {

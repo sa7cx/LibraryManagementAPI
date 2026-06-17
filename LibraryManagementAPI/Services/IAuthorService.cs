@@ -9,5 +9,6 @@ namespace LibraryManagementAPI.Services
         public Task<Author> Add(Author author);
         public Author Update(Author author);
         public Author Delete(Author author);
+        public Task<bool> IsValid(int id);
     }
 }

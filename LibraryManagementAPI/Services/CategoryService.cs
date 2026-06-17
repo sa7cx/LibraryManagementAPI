@@ -51,5 +51,12 @@ namespace LibraryManagementAPI.Services
             _context.SaveChanges();
             return category;
         }
+
+        public async Task<bool> IsValid(int id)
+        {
+            return await _context.Categories.AnyAsync(c => c.CategoryId == id);
+        }
+
+
     }
 }

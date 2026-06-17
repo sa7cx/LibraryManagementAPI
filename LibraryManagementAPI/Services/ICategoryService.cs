@@ -9,5 +9,6 @@ namespace LibraryManagementAPI.Services
         public Task<Category> Add(Category category);
         public Category Update(Category category);
         public Category Delete(Category category);
+        public Task<bool> IsValid(int id);
     }
 }

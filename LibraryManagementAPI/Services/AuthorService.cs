@@ -50,6 +50,11 @@ namespace LibraryManagementAPI.Services
             return author;
         }
 
+        public async Task<bool> IsValid(int id)
+        {
+            return await _context.Authors.AnyAsync(a => a.AuthorId == id);
+        }
+
 
     }
 }

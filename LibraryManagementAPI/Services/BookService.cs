@@ -62,9 +62,9 @@ namespace LibraryManagementAPI.Services
 
         public Book Delete(Book book)
         {
-            _context.Books.Remove(book);
+            book.IsDeleted = true;
             _context.SaveChanges();
-            return book;
+            return book ;
         }
 
         public async Task<bool> IsBookTitleExist(string title,int? id = null)

@@ -14,6 +14,7 @@ namespace LibraryManagementAPI.Models
 
         public int Quantity { get; set; }
         public string CoverImage { get; set; }
+        public bool IsDeleted { get; set; } = false ;
 
         public Author Author { get; set; }
         public Category Category { get; set; }

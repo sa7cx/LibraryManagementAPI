@@ -113,7 +113,7 @@ namespace LibraryManagementAPI.Controllers
                 {
                     return BadRequest("only .jpg .png .jpeg are allowed");
                 }
-                string filename = Guid.NewGuid + Path.GetExtension(dto.CoverImage.FileName);
+                string filename = Path.GetExtension(dto.CoverImage.FileName);
                 string foldePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "books");
                 Directory.CreateDirectory(foldePath);
                 var filePath = Path.Combine(foldePath, filename);

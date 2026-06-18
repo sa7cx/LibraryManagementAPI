@@ -33,11 +33,15 @@ namespace LibraryManagementAPI.Controllers
             var book = await _bookService.GetById(dto.BookID);
             if(book.Quantity == 0)
                 return BadRequest("not book avileble");
+            if (dto.ReturnDate <= dto.BorrowDate)
+                return BadRequest("ReturnDate can not be less than BorrowDate");
+
             var borrrow = new BorrowRecord
             {
                 BookID = dto.BookID,
                 MemberID = dto.MemberID,
                 ReturnDate = dto.ReturnDate,
+                BorrowDate = dto.BorrowDate,
             };
             await _borrowService.Borrowing(borrrow,book);
             return Ok(new

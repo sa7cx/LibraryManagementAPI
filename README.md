@@ -3,7 +3,7 @@
 مشروع API لإدارة مكتبة يحتوي على إدارة الكتب، المؤلفين، التصنيفات، الأعضاء وعمليات الاستعارة والإرجاع باستخدام ASP.NET Core و Entity Framework Core.
 
 🚀 Technologies Used
-ASP.NET Core Web API (.NET 6)
+ASP.NET Core Web API (.NET 8)
 Entity Framework Core
 SQL Server
 AutoMapper

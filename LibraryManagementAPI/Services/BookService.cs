@@ -72,5 +72,11 @@ namespace LibraryManagementAPI.Services
             return await _context.Books.AnyAsync(b => b.Title == title && b.BookID != id);
         }
 
+        public async Task<bool> Isvalid(int id)
+        {
+            return await _context.Books.AnyAsync(b => b.BookID == id);
+        }
+
+
     }
 }

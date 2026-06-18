@@ -53,6 +53,9 @@ namespace LibraryManagementAPI.Services
             return member;
         }
 
-
+        public async Task<bool> ISValid(int id)
+        {
+            return await _context.Members.AnyAsync(m => m.MemberID == id);
+        }
     }
 }

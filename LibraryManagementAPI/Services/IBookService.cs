@@ -10,6 +10,7 @@ namespace LibraryManagementAPI.Services
         public Book Update(Book book);
         public Book Delete(Book book);
         public Task<bool> IsBookTitleExist(string title,int? id = null);
+        public Task<bool> Isvalid(int id);
 
     }
 }

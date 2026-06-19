@@ -16,13 +16,6 @@ namespace LibraryManagementAPI.Services
         public async Task<IEnumerable<Member>> GetAll()
         {
             var members = await _context.Members
-                .Select(m => new Member
-                {
-                    MemberID = m.MemberID,
-                    FullName = m.FullName,
-                    Email = m.Email,
-                    Phone = m.Phone,                   
-                })
             .ToListAsync();
             return members;
         }

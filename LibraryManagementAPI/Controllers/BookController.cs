@@ -41,7 +41,7 @@ namespace LibraryManagementAPI.Controllers
                 return NotFound($"Id {id} is not found");
             }
             var result = _mapper.Map<BookDetailsDto>(book);
-            return Ok(book);
+            return Ok(result);
         }
         [HttpGet("byAuthorId/{id}")]
         public async Task<IActionResult> GetBooksByAuthorId(int id)
@@ -88,8 +88,11 @@ namespace LibraryManagementAPI.Controllers
             var filePath = Path.Combine(foldePath,filename);
             using var stream = new FileStream(filePath, FileMode.Create);
             await dto.CoverImage.CopyToAsync(stream);
+
             var book = _mapper.Map<Book>(dto);
+
             book.CoverImage = filePath;
+
             await _bookService.Add(book);
             var result = _mapper.Map<BookDetailsDto>(book);
             return Ok(result);
@@ -126,6 +129,7 @@ namespace LibraryManagementAPI.Controllers
                 await dto.CoverImage.CopyToAsync(stream);
                 book.CoverImage = filePath;
             }
+
              _mapper.Map(dto,book);
             _bookService.Update(book);
             var result = _mapper.Map<BookDetailsDto>(book);

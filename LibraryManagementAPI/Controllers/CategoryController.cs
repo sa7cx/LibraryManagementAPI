@@ -1,4 +1,5 @@
-﻿using LibraryManagementAPI.DTOs;
+﻿using AutoMapper;
+using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Models;
 using LibraryManagementAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -11,17 +12,20 @@ namespace LibraryManagementAPI.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
            var categories = await _categoryService.GetAll();
-            return Ok(categories);
+            var result = _mapper.Map<IEnumerable<CategoryDetailsDto>>(categories);
+            return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
@@ -31,18 +35,16 @@ namespace LibraryManagementAPI.Controllers
             {
                 return NotFound($"the Id {id} is not found");
             }
-            return Ok(category);
+            var result = _mapper.Map<CategoryDetailsDto>(category);
+            return Ok(result);
         }
         [HttpPost]
         public async Task<IActionResult> AddCategory (CreateCategoryDto dto)
         {
-            var category = new Category
-            {
-                Name = dto.Name,
-                Description = dto.Description
-            };
+            var category = _mapper.Map<Category>(dto);
             await _categoryService.Add(category);
-            return Ok(category);
+            var result = _mapper.Map<CategoryDetailsDto>(category);
+            return Ok(result);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto dto)
@@ -52,10 +54,10 @@ namespace LibraryManagementAPI.Controllers
             {
                 return NotFound($"the Id {id} is not found");
             }
-            category.Name = dto.Name;
-            category.Description = dto.Description;
+            _mapper.Map(dto,category);
             _categoryService.Update(category);
-            return Ok(category);
+            var result = _mapper.Map<CategoryDetailsDto>(category);
+            return Ok(result);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
@@ -66,7 +68,8 @@ namespace LibraryManagementAPI.Controllers
                 return NotFound($"the Id {id} is not found");
             }
             _categoryService.Delete(category);
-            return Ok(category);
+            var result = _mapper.Map<CategoryDetailsDto>(category);
+            return Ok(result);
         }
 
     }

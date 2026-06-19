@@ -22,6 +22,22 @@ namespace LibraryManagementAPI.Helper
             CreateMap<Book, BookDetailsDto>()
                 .ForMember(dest => dest.CategoryName,opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Author.FullName));
+
+            CreateMap<CreateMemberDto, Member>()
+                .ForMember(src => src.BorrowRecords,opt => opt.Ignore());
+
+            CreateMap<Member, MemberDetailsDto>();
+
+            CreateMap<CreateAuthorDto, Author>()
+                .ForMember(src => src.Books,opt =>opt.Ignore());
+
+            CreateMap<Author, AuthorDetailsDto>();
+
+            CreateMap<CreateCategoryDto,Category>()
+                .ForMember(src => src.Books,opt => opt.Ignore());
+
+            CreateMap<Category, CategoryDetailsDto>();
+
         }
     }
 }

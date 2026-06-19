@@ -1,4 +1,6 @@
-﻿using LibraryManagementAPI.DTOs;
+﻿using AutoMapper;
+using AutoMapper.Execution;
+using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Models;
 using LibraryManagementAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -11,17 +13,20 @@ namespace LibraryManagementAPI.Controllers
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _memberService;
+        private readonly IMapper _mapper;
 
-        public MemberController(IMemberService memberService)
+        public MemberController(IMemberService memberService, IMapper mapper)
         {
             _memberService = memberService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllMembers()
         {
             var members = await _memberService.GetAll();
-            return Ok(members);
+            var result = _mapper.Map<IEnumerable<MemberDetailsDto>>(members);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -32,20 +37,17 @@ namespace LibraryManagementAPI.Controllers
             {
                 return NotFound($"Id {id} is not found");
             }
-            return Ok(member);
+            var result = _mapper.Map<MemberDetailsDto>(member);
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMember(CreateMemberDto dto)
         {
-            var member = new Member
-            {
-                FullName = dto.FullName,
-                Email = dto.Email,
-                Phone = dto.Phone,
-            };
+            var member = _mapper.Map<LibraryManagementAPI.Models.Member>(dto);
             await _memberService.Add(member);
-            return Ok(member);
+            var result = _mapper.Map<MemberDetailsDto>(member);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
@@ -56,11 +58,10 @@ namespace LibraryManagementAPI.Controllers
             {
                 return NotFound($"Id {id} is not Found");            
             }
-            member.FullName = dto.FullName;
-            member.Email = dto.Email;
-            member.Phone = dto.Phone;
+            _mapper.Map(dto,member);
             _memberService.Update(member);
-            return Ok(member);
+            var result = _mapper.Map<MemberDetailsDto>(member);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
@@ -70,7 +71,8 @@ namespace LibraryManagementAPI.Controllers
             if (member == null)
                 return NotFound($"Id {id} is not found");
             _memberService.Delete(member);
-            return Ok(member);
+            var result = _mapper.Map<MemberDetailsDto>(member);
+            return Ok(result);
         }
 
     }

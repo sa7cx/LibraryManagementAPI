@@ -1,4 +1,5 @@
 ﻿using LibraryManagementAPI.Models;
+using LibraryManagementAPI.DTOs;
 
 namespace LibraryManagementAPI.Services
 {

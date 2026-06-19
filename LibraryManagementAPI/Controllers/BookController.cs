@@ -1,4 +1,5 @@
-﻿using LibraryManagementAPI.DTOs;
+﻿using AutoMapper;
+using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Models;
 using LibraryManagementAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -13,21 +14,23 @@ namespace LibraryManagementAPI.Controllers
         private readonly IBookService _bookService;
         private readonly IAuthorService _authorService;
         private readonly ICategoryService _categoryService;
-
+        private readonly IMapper _mapper;
         private List<string> _allowedExtentions = new List<string> { ".jpg", ".jpeg", ".png" };
 
-        public BookController(IBookService bookService, IAuthorService authorService, ICategoryService categoryService)
+        public BookController(IBookService bookService, IAuthorService authorService, ICategoryService categoryService,IMapper mapper)
         {
             _bookService = bookService;
             _authorService = authorService;
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllBooks()
         {
             var books = await _bookService.GetAll();
-            return Ok(books);
+            var result = _mapper.Map<IEnumerable<BookDetailsDto>>(books);
+            return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookById(int id)
@@ -37,19 +40,29 @@ namespace LibraryManagementAPI.Controllers
             {
                 return NotFound($"Id {id} is not found");
             }
+            var result = _mapper.Map<BookDetailsDto>(book);
             return Ok(book);
         }
         [HttpGet("byAuthorId/{id}")]
         public async Task<IActionResult> GetBooksByAuthorId(int id)
         {
+            var isvalid = await _authorService.IsValid(id);
+            if (!isvalid)
+                return BadRequest("invalid AuthorId");
+            
             var books = await _bookService.GetAll(AuthorId:id);
-            return Ok(books);
+            var result = _mapper.Map<IEnumerable<BookDetailsDto>>(books);
+            return Ok(result);
         }
         [HttpGet("byCategoryId/{id}")]
         public async Task<IActionResult> GetBooksByCategoryId(int id)
         {
+            var isvali = await _categoryService.IsValid(id);
+            if(!isvali)
+                return BadRequest("invalid CategoryID");
             var books = await _bookService.GetAll(CategoryId: id);
-            return Ok(books);
+            var result = _mapper.Map<IEnumerable<BookDetailsDto>>(books);
+            return Ok(result);
         }
         [HttpPost]
         public async Task<IActionResult> Createbook([FromForm] CreateBookDto dto)
@@ -59,35 +72,27 @@ namespace LibraryManagementAPI.Controllers
                 return BadRequest("only .jpg .png .jpeg are allowed");
             }
 
-            var IsValidCategoryId = await _authorService.IsValid(dto.AuthorID);
-            var IsValidAuthorId = await _categoryService.IsValid(dto.CategoryID);
+            var IsValidCategoryId = await _authorService.IsValid(dto.CategoryID);
+            var IsValidAuthorId = await _categoryService.IsValid(dto.AuthorID);
             if (!IsValidAuthorId)
                 return BadRequest("invalid AuthorId");
-            if (!IsValidAuthorId)
+            if (!IsValidCategoryId)
                 return BadRequest("invalid CategoryId");
             var IsBookTitleExist = await _bookService.IsBookTitleExist(dto.Title);
             if (IsBookTitleExist)
                 return BadRequest("title is alredy exist");
 
-            string filename = Guid.NewGuid + Path.GetExtension(dto.CoverImage.FileName);
+            string filename = Path.GetExtension(dto.CoverImage.FileName);
             string foldePath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot","images","books");
             Directory.CreateDirectory(foldePath);
             var filePath = Path.Combine(foldePath,filename);
             using var stream = new FileStream(filePath, FileMode.Create);
             await dto.CoverImage.CopyToAsync(stream);
-
-            var book = new Book
-            {
-                Title = dto.Title,
-                PublishYear = dto.PublishYear,
-                Price = dto.Price,
-                CoverImage = filePath,
-                Quantity = dto.Quantity,
-                AuthorID = dto.AuthorID,
-                CategoryID = dto.CategoryID,
-            };
-            _bookService.Add(book);
-            return Ok(book);
+            var book = _mapper.Map<Book>(dto);
+            book.CoverImage = filePath;
+            await _bookService.Add(book);
+            var result = _mapper.Map<BookDetailsDto>(book);
+            return Ok(result);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook([FromForm] UpdateBookDto dto , int id)
@@ -121,15 +126,10 @@ namespace LibraryManagementAPI.Controllers
                 await dto.CoverImage.CopyToAsync(stream);
                 book.CoverImage = filePath;
             }
-
-            book.Title = dto.Title;
-            book.AuthorID = dto.AuthorID;
-            book.Quantity = dto.Quantity;
-            book.CategoryID = dto.CategoryID;
-            book.PublishYear = dto.PublishYear;
-            book.Price = dto.Price;
+             _mapper.Map(dto,book);
             _bookService.Update(book);
-            return Ok(book);
+            var result = _mapper.Map<BookDetailsDto>(book);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
@@ -141,7 +141,8 @@ namespace LibraryManagementAPI.Controllers
                 return NotFound($"Id {id} is not found");
             }
             _bookService.Delete(book);
-            return Ok(book);
+            var result = _mapper.Map<BookDetailsDto>(book);
+            return Ok(result);
         }
            
     }

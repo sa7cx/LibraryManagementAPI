@@ -13,11 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AppDbContext>(
     op => op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IAuthorService, AuthorService>();
-builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IMemberService, MemberService>();
-builder.Services.AddScoped<IBorrowService, BorrowService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IAuthorService, AuthorService>();
+builder.Services.AddTransient<IBookService, BookService>();
+builder.Services.AddTransient<IMemberService, MemberService>();
+builder.Services.AddTransient<IBorrowService, BorrowService>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddCors(op =>
 {

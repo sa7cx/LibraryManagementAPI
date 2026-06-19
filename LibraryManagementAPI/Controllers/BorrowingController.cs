@@ -1,4 +1,6 @@
-﻿using LibraryManagementAPI.DTOs;
+﻿using AutoMapper;
+using LibraryManagementAPI.DTOs;
+using LibraryManagementAPI.Helper;
 using LibraryManagementAPI.Models;
 using LibraryManagementAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -13,12 +15,14 @@ namespace LibraryManagementAPI.Controllers
         private readonly IBookService _bookService;
         private readonly IMemberService _memberService;
         private readonly IBorrowService _borrowService;
+        private readonly IMapper _mapper;
 
-        public BorrowingController(IBookService bookService, IMemberService memberService, IBorrowService borrowService)
+        public BorrowingController(IBookService bookService, IMemberService memberService, IBorrowService borrowService, IMapper mapper)
         {
             _bookService = bookService;
             _memberService = memberService;
             _borrowService = borrowService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -36,24 +40,10 @@ namespace LibraryManagementAPI.Controllers
             if (dto.ReturnDate <= dto.BorrowDate)
                 return BadRequest("ReturnDate can not be less than BorrowDate");
 
-            var borrrow = new BorrowRecord
-            {
-                BookID = dto.BookID,
-                MemberID = dto.MemberID,
-                ReturnDate = dto.ReturnDate,
-                BorrowDate = dto.BorrowDate,
-            };
-            await _borrowService.Borrowing(borrrow,book);
-            return Ok(new
-            {
-                // مؤقت حتى يتم اضافة DTOs and AutoMapper
-                borrrow.Id,
-                borrrow.MemberID,
-                borrrow.BookID,
-                borrrow.BorrowDate,
-                borrrow.ReturnDate,
-                borrrow.status,
-            });
+            var borrow = _mapper.Map<BorrowRecord>(dto);            
+            await _borrowService.Borrowing(borrow,book);
+            var result = _mapper.Map<BorrowingDetailsDto>(borrow);
+            return Ok(result);
 
         }
 
@@ -68,17 +58,10 @@ namespace LibraryManagementAPI.Controllers
             var book = await _bookService.GetById(borrow.BookID);
             if(book == null)
                 return NotFound($"the bookId {borrow.BookID} is not found");
-            
+
             _borrowService.Returned(borrow,book);
-            return Ok(new
-            {
-                // مؤقت حتى يتم اضافة DTOs and AutoMapper
-                borrow.Id,
-                borrow.MemberID,
-                borrow.ReturnDate,
-                borrow.BookID,
-                borrow.status
-            });
+            var result = _mapper.Map<BorrowingDetailsDto>(borrow);
+            return Ok(result);
         }
 
     }

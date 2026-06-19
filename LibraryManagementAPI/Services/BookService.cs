@@ -18,19 +18,7 @@ namespace LibraryManagementAPI.Services
             var books =  _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Category)
-                .Select(b => new Book
-            {
-                BookID = b.BookID,
-                Title = b.Title,
-                PublishYear = b.PublishYear,
-                Price = b.Price,
-                AuthorID = b.AuthorID,
-                CategoryID = b.CategoryID,
-                Quantity = b.Quantity,
-                CoverImage = b.CoverImage,
-                Category = b.Category,
-                Author = b.Author
-            }).AsQueryable();
+                .AsQueryable();
 
             if(AuthorId.HasValue)
                 books = books.Where(b => b.AuthorID == AuthorId);
@@ -42,21 +30,24 @@ namespace LibraryManagementAPI.Services
 
         public async Task<Book> GetById(int id)
         {
-           var book = await _context.Books.SingleOrDefaultAsync(b => b.BookID == id);
+           var book = await _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Category)
+                .SingleOrDefaultAsync(b => b.BookID == id);
             return book;
         }
 
         public async Task<Book> Add(Book book)
         {
             await _context.Books.AddAsync(book);
-            _context.SaveChanges();
+             _context.SaveChanges();
             return book;
         }
 
         public Book Update(Book book)
         {
             _context.Books.Update(book);
-            _context.SaveChanges();
+             _context.SaveChanges();
             return book;
         }
 

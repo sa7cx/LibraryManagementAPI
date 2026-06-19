@@ -26,9 +26,9 @@ namespace LibraryManagementAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBooks()
+        public async Task<IActionResult> GetAllBooks( int? pageSize ,int? PageNumber, string? SearchByTitle )
         {
-            var books = await _bookService.GetAll();
+            var books = await _bookService.GetAll(pageSize: pageSize,pageNumber: PageNumber,searchByTitle: SearchByTitle);
             var result = _mapper.Map<IEnumerable<BookDetailsDto>>(books);
             return Ok(result);
         }

@@ -12,22 +12,24 @@ namespace LibraryManagementAPI.Services
         {
             _context = context;
         }
-
-        public async Task<IEnumerable<Book>> GetAll(int? AuthorId = null , int? CategoryId = null)
+        public async Task<IEnumerable<Book>> GetAll(int? AuthorId = null, int? CategoryId = null,
+            int? pageSize = null, int? pageNumber = null,string? searchByTitle = null)
         {
-            var books =  _context.Books
+            var books = _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Category)
                 .AsQueryable();
 
-            if(AuthorId.HasValue)
+            if (AuthorId.HasValue)
                 books = books.Where(b => b.AuthorID == AuthorId);
-            if(CategoryId.HasValue)
+            if (CategoryId.HasValue)
                 books = books.Where(b => b.CategoryID == CategoryId);
-
+            if(pageSize.HasValue && pageNumber.HasValue)
+                books = books.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            if (searchByTitle != null)
+                books = books.Where(b => b.Title.Contains(searchByTitle));
             return await books.ToListAsync();
         }
-
         public async Task<Book> GetById(int id)
         {
            var book = await _context.Books
@@ -68,6 +70,6 @@ namespace LibraryManagementAPI.Services
             return await _context.Books.AnyAsync(b => b.BookID == id);
         }
 
-
+        
     }
 }

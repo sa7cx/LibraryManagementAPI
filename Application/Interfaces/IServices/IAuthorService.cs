@@ -1,6 +1,6 @@
 ﻿using LibraryManagementAPI.Models;
 
-namespace LibraryManagementAPI.Services
+namespace Application.Interfaces.IServices
 {
     public interface IAuthorService
     {

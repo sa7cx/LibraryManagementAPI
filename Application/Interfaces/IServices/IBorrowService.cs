@@ -1,7 +1,7 @@
 ﻿using LibraryManagementAPI.Models;
 using LibraryManagementAPI.DTOs;
 
-namespace LibraryManagementAPI.Services
+namespace Application.Interfaces.IServices
 {
     public interface IBorrowService
     {

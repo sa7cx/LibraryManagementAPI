@@ -1,7 +1,7 @@
-﻿using AutoMapper;
+﻿using Application.Interfaces.IServices;
+using AutoMapper;
 using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Models;
-using LibraryManagementAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

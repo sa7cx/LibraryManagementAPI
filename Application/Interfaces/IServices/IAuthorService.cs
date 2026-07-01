@@ -1,14 +1,15 @@
-﻿using LibraryManagementAPI.Models;
+﻿using Application.DTOs.Author;
+using LibraryManagementAPI.Models;
 
 namespace Application.Interfaces.IServices
 {
     public interface IAuthorService
     {
-        public Task<IEnumerable<Author>> GetAll();
-        public Task<Author> GetById(int id);
-        public Task<Author> Add(Author author);
-        public Author Update(Author author);
-        public Author Delete(Author author);
-        public Task<bool> IsValid(int id);
+        public Task<IEnumerable<AuthorDetailsDto>> GetAll();
+        public Task<AuthorDetailsDto> GetById(int id);
+        public Task Add(CreateAuthorDto authorDto);
+        public Task Update(int id , CreateAuthorDto authorDto);
+        public Task Delete(int id);
+
     }
 }

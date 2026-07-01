@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementAPI.DTOs
+﻿namespace Application.DTOs.Borrow
 {
     public class CreateBorrowingDto
     {

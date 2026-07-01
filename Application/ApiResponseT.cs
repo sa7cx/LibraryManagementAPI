@@ -6,24 +6,18 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    public class ApiResponse
+    public class ApiResponse<T>
     {
         public int StatusCode { get; set; }
         public string Message { get; set; } = string.Empty;
-        public static ApiResponse Success(string message = "Success", int statusCode = 200)
+        public T? Data { get; set; }
+        public static ApiResponse<T> Success(T? data, string message = "Success", int statusCode = 200)
         {
-            return new ApiResponse
+            return new ApiResponse<T>
             {
                 StatusCode = statusCode,
                 Message = message,
-            };
-        }
-        public static ApiResponse Fail(string message,int statusCode)
-        {
-            return new ApiResponse
-            {
-                StatusCode = statusCode,
-                Message = message,
+                Data = data
             };
         }
     }

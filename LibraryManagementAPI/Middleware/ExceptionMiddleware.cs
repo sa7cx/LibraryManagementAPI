@@ -30,7 +30,7 @@ public class ExceptionMiddleware
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = ex.StatusCode;
-        var res = ApiResponse<object>.Fail(ex.Message, ex.StatusCode);
+        var res = ApiResponse.Fail(ex.Message, ex.StatusCode);
         await context.Response.WriteAsJsonAsync(res);
     }
 
@@ -38,7 +38,7 @@ public class ExceptionMiddleware
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = 500;
-        var res = ApiResponse<object>.Fail("Internal Server Error",500);
+        var res = ApiResponse.Fail(ex.Message,500);
         await context.Response.WriteAsJsonAsync(res);
     }
 }

@@ -1,4 +1,8 @@
-﻿using Application.Interfaces.IServices;
+﻿using Application.DTOs.Author;
+using Application.Exceptions;
+using Application.Interfaces.IRepositories;
+using Application.Interfaces.IServices;
+using AutoMapper;
 using LibraryManagementAPI.Models;
 
 
@@ -6,55 +10,66 @@ namespace LibraryManagementAPI.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly AppDbContext _context;
-
-        public AuthorService(AppDbContext context)
+        private readonly IAuthorRepository _authorRepository;
+        public AuthorService(IAuthorRepository authorRepository)
         {
-            _context = context;
+            _authorRepository = authorRepository;
         }
 
-        public async Task<IEnumerable<Author>> GetAll()
+        public async Task<IEnumerable<AuthorDetailsDto>> GetAll()
         {
-            var authors = await _context.Authors.Select(a => new Author
+            var authors = await _authorRepository.GetAll();
+            var result = authors.Select(author => new AuthorDetailsDto
             {
-                AuthorId = a.AuthorId,
-                FullName = a.FullName,
-                Country = a.Country,
-                Books = a.Books
-            }).ToListAsync();
-            return authors;
+                AuthorId = author.AuthorId,
+                FullName = author.FullName,
+                Country = author.Country,
+            });
+            return result;
         }
 
-        public async Task<Author> GetById(int id)
+        public async Task<AuthorDetailsDto> GetById(int id)
         {
-            var author = await _context.Authors.FirstOrDefaultAsync(a => a.AuthorId == id);
-            return author;
-        }
-        public async Task<Author> Add(Author author)
-        {
-            await _context.Authors.AddAsync(author);
-            _context.SaveChanges();
-            return author;
-        }
-        public Author Update(Author author)
-        {
-            _context.Authors.Update(author);
-            _context.SaveChanges();
-            return author;
+            var author = await _authorRepository.GetById(id);
+            if (author == null)
+                 throw new NotFoundException("Author not found");
+
+            var result = new AuthorDetailsDto
+            {
+                AuthorId = author.AuthorId,
+                Country = author.Country,
+                FullName = author.FullName,
+            };
+            return result;
         }
 
-        public Author Delete(Author author)
+        public async Task Add(CreateAuthorDto authorDto)
         {
-            _context.Remove(author);
-            _context.SaveChanges();
-            return author;
+            var author = new Author
+            {
+                FullName = authorDto.FullName,
+                Country = authorDto.Country,
+            };
+            await _authorRepository.Add(author);
         }
 
-        public async Task<bool> IsValid(int id)
+        public async Task Update(int id, CreateAuthorDto authorDto)
         {
-            return await _context.Authors.AnyAsync(a => a.AuthorId == id);
+            var author = await _authorRepository.GetById(id);
+            if (author == null)
+                throw new NotFoundException("Author not found");
+            author.FullName = authorDto.FullName;
+            author.Country = authorDto.Country;
+            await _authorRepository.Update(author);
         }
 
+        public async Task Delete(int id)
+        {
+            var author = await _authorRepository.GetById(id);
+            if (author == null)
+                throw new NotFoundException("Author not found");
+            await _authorRepository.Delete(author);
+        }
 
     }
 }

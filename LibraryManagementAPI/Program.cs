@@ -1,4 +1,6 @@
+using Application.Interfaces.IRepositories;
 using Application.Interfaces.IServices;
+using Infrastructure.Repositories;
 using LibraryManagementAPI.Data;
 using LibraryManagementAPI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +16,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AppDbContext>(
     op => op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddTransient<ICategoryService, CategoryService>();
+//builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IAuthorService, AuthorService>();
-builder.Services.AddTransient<IBookService, BookService>();
-builder.Services.AddTransient<IMemberService, MemberService>();
-builder.Services.AddTransient<IBorrowService, BorrowService>();
+//builder.Services.AddTransient<IBookService, BookService>();
+//builder.Services.AddTransient<IMemberService, MemberService>();
+//builder.Services.AddTransient<IBorrowService, BorrowService>();
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
+
 
 builder.Services.AddCors(op =>
 {

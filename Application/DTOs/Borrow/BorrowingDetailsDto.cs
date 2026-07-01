@@ -1,6 +1,6 @@
 ﻿using LibraryManagementAPI.Models;
 
-namespace LibraryManagementAPI.DTOs
+namespace Application.DTOs.Borrow
 {
     public class BorrowingDetailsDto
     {

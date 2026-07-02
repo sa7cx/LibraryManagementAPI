@@ -1,79 +1,58 @@
-﻿//using Application.DTOs.Member;
-//using Application.Interfaces.IServices;
-//using AutoMapper;
-//using AutoMapper.Execution;
-//using LibraryManagementAPI.Models;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
+﻿using Application;
+using Application.DTOs.Member;
+using Application.Interfaces.IServices;
+using AutoMapper;
+using AutoMapper.Execution;
+using LibraryManagementAPI.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace LibraryManagementAPI.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class MemberController : ControllerBase
-//    {
-//        private readonly IMemberService _memberService;
-//        private readonly IMapper _mapper;
+namespace LibraryManagementAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MemberController : ControllerBase
+    {
+        private readonly IMemberService _memberService;
+        public MemberController(IMemberService memberService)
+        {
+            _memberService = memberService;
+        }
 
-//        public MemberController(IMemberService memberService, IMapper mapper)
-//        {
-//            _memberService = memberService;
-//            _mapper = mapper;
-//        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllMembers()
+        {
+           var res = await _memberService.GetAll();
+            return Ok(ApiResponse<IEnumerable<MemberDetailsDto>>.Success(res));
+        }
 
-//        [HttpGet]
-//        public async Task<IActionResult> GetAllMembers()
-//        {
-//            var members = await _memberService.GetAll();
-//            var result = _mapper.Map<IEnumerable<MemberDetailsDto>>(members);
-//            return Ok(result);
-//        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMemberById(int id)
+        {
+            var res = await _memberService.GetById(id);
+            return Ok(ApiResponse<MemberDetailsDto>.Success(res));
+        }
 
-//        [HttpGet("{id}")]
-//        public async Task<IActionResult> GetMemberById(int id)
-//        {
-//            var member = await _memberService.GetById(id);
-//            if(member == null)
-//            {
-//                return NotFound($"Id {id} is not found");
-//            }
-//            var result = _mapper.Map<MemberDetailsDto>(member);
-//            return Ok(result);
-//        }
+        [HttpPost]
+        public async Task<IActionResult> CreateMember(CreateMemberDto dto)
+        {
+            await _memberService.Add(dto);
+            return Ok(ApiResponse.Success("Added Successfuly"));
+        }
 
-//        [HttpPost]
-//        public async Task<IActionResult> CreateMember(CreateMemberDto dto)
-//        {
-//            var member = _mapper.Map<LibraryManagementAPI.Models.Member>(dto);
-//            await _memberService.Add(member);
-//            var result = _mapper.Map<MemberDetailsDto>(member);
-//            return Ok(result);
-//        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMember(CreateMemberDto dto, int id)
+        {
+            await _memberService.Update(id, dto);
+            return Ok(ApiResponse.Success("Updated Successfuly"));
+        }
 
-//        [HttpPut("{id}")]
-//        public async Task<IActionResult> UpdateMember(CreateMemberDto dto,int id)
-//        {
-//            var member = await _memberService.GetById(id);
-//            if(member == null)
-//            {
-//                return NotFound($"Id {id} is not Found");            
-//            }
-//            _mapper.Map(dto,member);
-//            _memberService.Update(member);
-//            var result = _mapper.Map<MemberDetailsDto>(member);
-//            return Ok(result);
-//        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMember(int id)
+        {
+            await _memberService.Delete(id);
+            return Ok(ApiResponse.Success("Deleted Successfuly"));
+        }
 
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteMember(int id)
-//        {
-//            var member = await _memberService.GetById(id);
-//            if (member == null)
-//                return NotFound($"Id {id} is not found");
-//            _memberService.Delete(member);
-//            var result = _mapper.Map<MemberDetailsDto>(member);
-//            return Ok(result);
-//        }
-
-//    }
-//}
+    }
+}

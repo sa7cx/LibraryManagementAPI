@@ -1,14 +1,14 @@
-﻿using LibraryManagementAPI.Models;
+﻿using Application.DTOs.Member;
+using LibraryManagementAPI.Models;
 
 namespace Application.Interfaces.IServices
 {
     public interface IMemberService
     {
-        public Task<IEnumerable<Member>> GetAll();
-        public Task<Member> GetById(int id);
-        public Task<Member> Add(Member member);
-        public Member Update(Member member);
-        public Member Delete(Member member);
-        public Task<bool> ISValid(int id);
+        public Task<IEnumerable<MemberDetailsDto>> GetAll();
+        public Task<MemberDetailsDto> GetById(int id);
+        public Task Add(CreateMemberDto memberDto);
+        public Task Update(int id,CreateMemberDto memberDto);
+        public Task Delete(int id);
     }
 }

@@ -2,7 +2,6 @@
 using Application.Exceptions;
 using Application.Interfaces.IRepositories;
 using Application.Interfaces.IServices;
-using AutoMapper;
 using LibraryManagementAPI.Models;
 
 

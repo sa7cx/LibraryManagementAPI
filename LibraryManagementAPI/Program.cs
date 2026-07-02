@@ -18,12 +18,13 @@ builder.Services.AddDbContext<AppDbContext>(
 
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IAuthorService, AuthorService>();
+builder.Services.AddTransient<IMemberService, MemberService>();
 //builder.Services.AddTransient<IBookService, BookService>();
-//builder.Services.AddTransient<IMemberService, MemberService>();
 //builder.Services.AddTransient<IBorrowService, BorrowService>();
 
 builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 
 
 builder.Services.AddCors(op =>

@@ -1,61 +1,75 @@
-﻿//using Application.Interfaces.IServices;
-//using LibraryManagementAPI.Models;
+﻿using Application.DTOs.Category;
+using Application.Exceptions;
+using Application.Interfaces.IRepositories;
+using Application.Interfaces.IServices;
+using LibraryManagementAPI.Models;
 
-//namespace LibraryManagementAPI.Services
-//{
-//    public class CategoryService : ICategoryService
-//    {
-//        private readonly AppDbContext _context;
+namespace LibraryManagementAPI.Services
+{
+    public class CategoryService : ICategoryService
+    {
+        private readonly ICategoryRepository _categoryRepository;
 
-//        public CategoryService(AppDbContext context)
-//        {
-//            _context = context;
-//        }
+        public CategoryService(ICategoryRepository categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
 
-//        public async Task<IEnumerable<Category>> GetAll()
-//        {
-//           var categories = await _context.Categories.Select(c=>new Category
-//           {
-//               CategoryId = c.CategoryId,
-//               Name = c.Name,
-//               Description = c.Description,
-//           }).OrderBy(c => c.Name).ToListAsync();
-//           return categories;
-//        }
+        public async Task<IEnumerable<CategoryDetailsDto>> GetAll()
+        {
+            var categories = await _categoryRepository.GetAll();
+            var res = categories.Select(c => new CategoryDetailsDto
+            {
+                CategoryId = c.CategoryId,
+                Name = c.Name,
+                Description = c.Description
+            });
+            return res;
+        }
 
-//        public async Task<Category> GetById(int id)
-//        {
-//            var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
-//            return category;
-//        }
+        public async Task<CategoryDetailsDto> GetById(int id)
+        {
+            var category = await _categoryRepository.GetById(id);
+            if (category == null)
+                throw new NotFoundException("Category not found");
+            var res = new CategoryDetailsDto
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                Description = category.Description
+            };
+            return res;
+        }
 
-//        public async Task<Category> Add(Category category)
-//        {
-//            await _context.Categories.AddAsync(category);
-//            _context.SaveChanges();
-//            return category;
-//        }
-
-
-//        public Category Update(Category category)
-//        {
-//            _context.Update(category);
-//            _context.SaveChanges();
-//            return category;
-//        }
-
-//        public Category Delete(Category category)
-//        {
-//            _context.Remove(category);
-//            _context.SaveChanges();
-//            return category;
-//        }
-
-//        public async Task<bool> IsValid(int id)
-//        {
-//            return await _context.Categories.AnyAsync(c => c.CategoryId == id);
-//        }
+        public async Task Add(CreateCategoryDto categoryDto)
+        {
+            var category = new Category
+            {
+                Name = categoryDto.Name,
+                Description = categoryDto.Description
+            };
+            await _categoryRepository.Add(category);
+        }
 
 
-//    }
-//}
+        public async Task Update(int id,CreateCategoryDto categoryDto)
+        {
+            var category = await _categoryRepository.GetById(id);
+            if (category == null)
+                throw new NotFoundException("Category not found");
+            category.Name = categoryDto.Name;
+            category.Description = categoryDto.Description;
+            await _categoryRepository.Update(category);
+        }
+
+        public async Task Delete(int id)
+        {
+            var category = await _categoryRepository.GetById(id);
+            if (category == null)
+                throw new NotFoundException("Category not found");
+            await _categoryRepository.Delete(category);
+        }
+
+
+    }
+}

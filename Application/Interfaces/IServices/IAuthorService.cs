@@ -5,11 +5,11 @@ namespace Application.Interfaces.IServices
 {
     public interface IAuthorService
     {
-        public Task<IEnumerable<AuthorDetailsDto>> GetAll();
-        public Task<AuthorDetailsDto> GetById(int id);
-        public Task Add(CreateAuthorDto authorDto);
-        public Task Update(int id , CreateAuthorDto authorDto);
-        public Task Delete(int id);
+        public Task<ApiResponse<IEnumerable<AuthorDetailsDto>>> GetAll();
+        public Task<ApiResponse<AuthorDetailsDto>> GetById(int id);
+        public Task<ApiResponse> Add(CreateAuthorDto authorDto);
+        public Task<ApiResponse> Update(int id , CreateAuthorDto authorDto);
+        public Task<ApiResponse> Delete(int id);
 
     }
 }

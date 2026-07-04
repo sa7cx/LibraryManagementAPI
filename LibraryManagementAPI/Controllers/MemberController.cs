@@ -23,35 +23,35 @@ namespace LibraryManagementAPI.Controllers
         public async Task<IActionResult> GetAllMembers()
         {
            var res = await _memberService.GetAll();
-            return Ok(ApiResponse<IEnumerable<MemberDetailsDto>>.Success(res));
+            return Ok(res);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMemberById(int id)
         {
             var res = await _memberService.GetById(id);
-            return Ok(ApiResponse<MemberDetailsDto>.Success(res));
+            return Ok(res);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMember(CreateMemberDto dto)
         {
-            await _memberService.Add(dto);
-            return Ok(ApiResponse.Success("Added Successfuly"));
+            var res = await _memberService.Add(dto);
+            return Ok(res);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMember(CreateMemberDto dto, int id)
         {
-            await _memberService.Update(id, dto);
-            return Ok(ApiResponse.Success("Updated Successfuly"));
+            var res = await _memberService.Update(id, dto);
+            return Ok(res);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMember(int id)
         {
-            await _memberService.Delete(id);
-            return Ok(ApiResponse.Success("Deleted Successfuly"));
+            var res = await _memberService.Delete(id);
+            return Ok(res);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Member;
+﻿using Application;
+using Application.DTOs.Member;
 using Application.Exceptions;
 using Application.Interfaces.IRepositories;
 using Application.Interfaces.IServices;
@@ -16,7 +17,7 @@ namespace LibraryManagementAPI.Services
             _memberRepository = memberRepository;
         }
 
-        public async Task<IEnumerable<MemberDetailsDto>> GetAll()
+        public async Task<ApiResponse<IEnumerable<MemberDetailsDto>>> GetAll()
         {
             var members = await _memberRepository.GetAll();
              var res = members.Select(m => new MemberDetailsDto
@@ -26,10 +27,10 @@ namespace LibraryManagementAPI.Services
                 Email = m.Email,
                 Phone = m.Phone
             });
-            return res;
+            return ApiResponse<IEnumerable<MemberDetailsDto>>.Success(res) ;
         }
 
-        public async Task<MemberDetailsDto> GetById(int id)
+        public async Task<ApiResponse<MemberDetailsDto>> GetById(int id)
         {
             var member = await _memberRepository.GetById(id);
             if (member == null)
@@ -41,10 +42,10 @@ namespace LibraryManagementAPI.Services
                 Email = member.Email,
                 Phone = member.Phone
             };
-            return res;
+            return ApiResponse<MemberDetailsDto>.Success(res);
         }
 
-        public async Task Add(CreateMemberDto memberDto)
+        public async Task<ApiResponse> Add(CreateMemberDto memberDto)
         {
            var member = new Member
            {
@@ -53,9 +54,10 @@ namespace LibraryManagementAPI.Services
                Phone = memberDto.Phone
            };
            await _memberRepository.Add(member);
+            return ApiResponse.Success("Member added successfully");
         }
 
-        public async Task Update(int id,CreateMemberDto memberDto)
+        public async Task<ApiResponse> Update(int id,CreateMemberDto memberDto)
         {
             var member = await _memberRepository.GetById(id);
             if (member == null)
@@ -64,14 +66,16 @@ namespace LibraryManagementAPI.Services
             member.Email = memberDto.Email;
             member.Phone = memberDto.Phone;
             await _memberRepository.Update(member);
+            return ApiResponse.Success("Member updated successfully");
         }
 
-        public async Task Delete(int id)
+        public async Task<ApiResponse> Delete(int id)
         {
             var member = await _memberRepository.GetById(id);
             if (member == null)
                 throw new NotFoundException("Member not found");
             await _memberRepository.Delete(member);
+            return ApiResponse.Success("Member deleted successfully");
         }
 
     }

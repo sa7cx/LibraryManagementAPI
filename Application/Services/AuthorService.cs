@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Author;
+﻿using Application;
+using Application.DTOs.Author;
 using Application.Exceptions;
 using Application.Interfaces.IRepositories;
 using Application.Interfaces.IServices;
@@ -15,7 +16,7 @@ namespace LibraryManagementAPI.Services
             _authorRepository = authorRepository;
         }
 
-        public async Task<IEnumerable<AuthorDetailsDto>> GetAll()
+        public async Task<ApiResponse<IEnumerable<AuthorDetailsDto>>> GetAll()
         {
             var authors = await _authorRepository.GetAll();
             var result = authors.Select(author => new AuthorDetailsDto
@@ -24,10 +25,10 @@ namespace LibraryManagementAPI.Services
                 FullName = author.FullName,
                 Country = author.Country,
             });
-            return result;
+            return ApiResponse<IEnumerable<AuthorDetailsDto>>.Success(result);
         }
 
-        public async Task<AuthorDetailsDto> GetById(int id)
+        public async Task<ApiResponse<AuthorDetailsDto>> GetById(int id)
         {
             var author = await _authorRepository.GetById(id);
             if (author == null)
@@ -39,10 +40,10 @@ namespace LibraryManagementAPI.Services
                 Country = author.Country,
                 FullName = author.FullName,
             };
-            return result;
+            return ApiResponse<AuthorDetailsDto>.Success(result);
         }
 
-        public async Task Add(CreateAuthorDto authorDto)
+        public async Task<ApiResponse> Add(CreateAuthorDto authorDto)
         {
             var author = new Author
             {
@@ -50,9 +51,10 @@ namespace LibraryManagementAPI.Services
                 Country = authorDto.Country,
             };
             await _authorRepository.Add(author);
+            return ApiResponse.Success("Author created successfully");
         }
 
-        public async Task Update(int id, CreateAuthorDto authorDto)
+        public async Task<ApiResponse> Update(int id, CreateAuthorDto authorDto)
         {
             var author = await _authorRepository.GetById(id);
             if (author == null)
@@ -60,14 +62,16 @@ namespace LibraryManagementAPI.Services
             author.FullName = authorDto.FullName;
             author.Country = authorDto.Country;
             await _authorRepository.Update(author);
+            return ApiResponse.Success("Author updated successfully");
         }
 
-        public async Task Delete(int id)
+        public async Task<ApiResponse> Delete(int id)
         {
             var author = await _authorRepository.GetById(id);
             if (author == null)
                 throw new NotFoundException("Author not found");
             await _authorRepository.Delete(author);
+            return ApiResponse.Success("Author deleted successfully");
         }
 
     }

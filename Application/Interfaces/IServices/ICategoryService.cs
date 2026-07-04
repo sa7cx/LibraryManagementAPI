@@ -5,10 +5,10 @@ namespace Application.Interfaces.IServices
 {
     public interface ICategoryService
     {
-        public  Task<IEnumerable<CategoryDetailsDto>> GetAll();
-        public  Task<CategoryDetailsDto> GetById(int id);
-        public Task Add(CreateCategoryDto categoryDto);
-        public Task Update(int id,CreateCategoryDto categoryDto);
-        public Task Delete(int id);
+        public  Task<ApiResponse<IEnumerable<CategoryDetailsDto>>> GetAll();
+        public  Task<ApiResponse<CategoryDetailsDto>> GetById(int id);
+        public Task<ApiResponse> Add(CreateCategoryDto categoryDto);
+        public Task<ApiResponse> Update(int id,CreateCategoryDto categoryDto);
+        public Task<ApiResponse> Delete(int id);
     }
 }

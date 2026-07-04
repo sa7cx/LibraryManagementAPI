@@ -22,31 +22,31 @@ namespace LibraryManagementAPI.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var res = await _categoryService.GetAll();
-            return Ok(ApiResponse<IEnumerable<CategoryDetailsDto>>.Success(res));
+            return Ok(res);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             var res = await _categoryService.GetById(id);
-            return Ok(ApiResponse<CategoryDetailsDto>.Success(res));
+            return Ok(res);
         }
         [HttpPost]
         public async Task<IActionResult> AddCategory(CreateCategoryDto dto)
         {
-            await _categoryService.Add(dto);
-            return Ok(ApiResponse.Success("Added Successfuly"));
+            var res = await _categoryService.Add(dto);
+            return Ok(res);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto dto)
         {
-            await _categoryService.Update(id, dto);
-            return Ok(ApiResponse.Success("Updated Successfuly"));
+            var res = await _categoryService.Update(id, dto);
+            return Ok(res);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            await _categoryService.Delete(id);
-            return Ok(ApiResponse.Success("Deleted Successfuly"));
+            var res = await _categoryService.Delete(id);
+            return Ok(res);
 
         }
 

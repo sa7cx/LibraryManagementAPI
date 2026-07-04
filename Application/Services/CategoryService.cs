@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Category;
+﻿using Application;
+using Application.DTOs.Category;
 using Application.Exceptions;
 using Application.Interfaces.IRepositories;
 using Application.Interfaces.IServices;
@@ -15,7 +16,7 @@ namespace LibraryManagementAPI.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IEnumerable<CategoryDetailsDto>> GetAll()
+        public async Task<ApiResponse<IEnumerable<CategoryDetailsDto>>> GetAll()
         {
             var categories = await _categoryRepository.GetAll();
             var res = categories.Select(c => new CategoryDetailsDto
@@ -24,10 +25,10 @@ namespace LibraryManagementAPI.Services
                 Name = c.Name,
                 Description = c.Description
             });
-            return res;
+            return ApiResponse<IEnumerable<CategoryDetailsDto>>.Success(res);
         }
 
-        public async Task<CategoryDetailsDto> GetById(int id)
+        public async Task<ApiResponse<CategoryDetailsDto>> GetById(int id)
         {
             var category = await _categoryRepository.GetById(id);
             if (category == null)
@@ -38,10 +39,10 @@ namespace LibraryManagementAPI.Services
                 Name = category.Name,
                 Description = category.Description
             };
-            return res;
+            return ApiResponse<CategoryDetailsDto>.Success(res);
         }
 
-        public async Task Add(CreateCategoryDto categoryDto)
+        public async Task<ApiResponse> Add(CreateCategoryDto categoryDto)
         {
             var category = new Category
             {
@@ -49,10 +50,11 @@ namespace LibraryManagementAPI.Services
                 Description = categoryDto.Description
             };
             await _categoryRepository.Add(category);
+            return ApiResponse.Success("Category added successfully");
         }
 
 
-        public async Task Update(int id,CreateCategoryDto categoryDto)
+        public async Task<ApiResponse> Update(int id,CreateCategoryDto categoryDto)
         {
             var category = await _categoryRepository.GetById(id);
             if (category == null)
@@ -60,14 +62,16 @@ namespace LibraryManagementAPI.Services
             category.Name = categoryDto.Name;
             category.Description = categoryDto.Description;
             await _categoryRepository.Update(category);
+            return ApiResponse.Success("Category updated successfully");
         }
 
-        public async Task Delete(int id)
+        public async Task<ApiResponse> Delete(int id)
         {
             var category = await _categoryRepository.GetById(id);
             if (category == null)
                 throw new NotFoundException("Category not found");
             await _categoryRepository.Delete(category);
+            return ApiResponse.Success("Category deleted successfully");
         }
 
 

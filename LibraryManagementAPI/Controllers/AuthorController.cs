@@ -22,31 +22,31 @@ namespace LibraryManagementAPI.Controllers
         public async Task<IActionResult> GetAllAuthors()
         {
             var authors = await _authorService.GetAll();
-            return Ok(ApiResponse<IEnumerable<AuthorDetailsDto>>.Success(authors));
+            return Ok(authors);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAuthorById(int id)
         {
-            var author = await _authorService.GetById(id);
-            return Ok(ApiResponse<AuthorDetailsDto>.Success(author));
+            var res = await _authorService.GetById(id);
+            return Ok(res);
         }
         [HttpPost]
         public async Task<IActionResult> AddAuthor(CreateAuthorDto dto)
         {
-            await _authorService.Add(dto);
-            return Ok(ApiResponse.Success("Added Successfuly"));
+            var res = await _authorService.Add(dto);
+            return Ok(res);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAuthor(CreateAuthorDto dto, int id)
         {
-            await _authorService.Update(id, dto);
-            return Ok(ApiResponse.Success("Updated Successfuly"));
+            var res = await _authorService.Update(id, dto);
+            return Ok(res);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            await _authorService.Delete(id);
-            return Ok(ApiResponse.Success("Deleted Successfuly"));
+            var res = await _authorService.Delete(id);
+            return Ok(res);
         }
 
     }

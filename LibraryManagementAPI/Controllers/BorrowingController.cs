@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Borrow;
 using Application.Interfaces.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,7 @@ namespace LibraryManagementAPI.Controllers
             var result = await _borrowService.GetById(id);
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> BorrowBook(CreateBorrowingDto dto)
         {
@@ -39,7 +40,7 @@ namespace LibraryManagementAPI.Controllers
             var result = await _borrowService.Borrow(dto);
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> ReturnBook(int id)
         {

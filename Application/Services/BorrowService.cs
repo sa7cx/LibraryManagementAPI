@@ -60,7 +60,7 @@ namespace LibraryManagementAPI.Services
                 throw new NotFoundException("Book not found");
 
             if (book.Quantity <= 0)
-                throw new InvalidOperationException("This book is not available for borrowing");
+                throw new BadRequestException("This book is not available for borrowing");
 
             var member = await _memberRepository.GetById(borrowDto.MemberID);
             if (member == null)

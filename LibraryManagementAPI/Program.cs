@@ -4,7 +4,13 @@ using Infrastructure.Repositories;
 using LibraryManagementAPI.Data;
 using LibraryManagementAPI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using IAuthenticationService = Application.Interfaces.IServices.IAuthenticationService;
+using Application.Services;
+using Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +27,17 @@ builder.Services.AddTransient<IAuthorService, AuthorService>();
 builder.Services.AddTransient<IMemberService, MemberService>();
 builder.Services.AddTransient<IBookService, BookService>();
 builder.Services.AddTransient<IBorrowService, BorrowService>();
+builder.Services.AddTransient<IAuthenticationService, AuthenticationSerice>();
+builder.Services.AddTransient<GenerateToken>();
 
 builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<IBorrowRepository, BorrowRepository>();
+builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 
+builder.Services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AppDbContext>().AddSignInManager();
 
 builder.Services.AddCors(op =>
 {
@@ -68,6 +78,23 @@ builder.Services.AddSwaggerGen(
         });
     });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -82,6 +109,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.UseCors("AllowFrontEnd");
 

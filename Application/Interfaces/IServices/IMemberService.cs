@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Member;
+﻿using Application.Common;
+using Application.DTOs.Member;
 using LibraryManagementAPI.Models;
 
 namespace Application.Interfaces.IServices

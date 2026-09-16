@@ -9,7 +9,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Application
+namespace Application.Common
 {
     public class GenerateToken
     {

@@ -10,7 +10,7 @@ using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using IAuthenticationService = Application.Interfaces.IServices.IAuthenticationService;
 using Application.Services;
-using Application;
+using Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

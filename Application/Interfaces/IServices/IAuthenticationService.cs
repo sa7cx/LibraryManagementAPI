@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Auth;
+﻿using Application.Common;
+using Application.DTOs.Auth;
 using Infrastructure.Identity;
 using System;
 using System.Collections.Generic;

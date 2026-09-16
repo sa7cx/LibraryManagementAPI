@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Auth;
+﻿using Application.Common;
+using Application.DTOs.Auth;
 using Application.Exceptions;
 using Application.Interfaces.IRepositories;
 using Application.Interfaces.IServices;

@@ -10,7 +10,7 @@ namespace Application.Interfaces.IServices
             int? AuthorId = null, int? CategoryId = null, string? searchByTitle = null);
         public Task<ApiResponse<BookDetailsDto>> GetById(int id);
         public Task<ApiResponse> Add(CreateBookDto bookDto);
-        public Task<ApiResponse> Update(int id, CreateBookDto bookDto);
+        public Task<ApiResponse> Update(int id, UpdateBookDto bookDto);
         public Task<ApiResponse> Delete(int id);
     }
 }

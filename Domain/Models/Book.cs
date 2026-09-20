@@ -20,5 +20,7 @@ namespace LibraryManagementAPI.Models
         public Category Category { get; set; }
         public ICollection<BorrowRecord> BorrowRecords { get; set; }
 
+
+        public byte[] RowVersion { get; set; }
     }
 }

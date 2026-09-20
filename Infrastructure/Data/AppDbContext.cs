@@ -14,6 +14,10 @@ namespace LibraryManagementAPI.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Book>()
                 .HasQueryFilter(b => !b.IsDeleted);
+
+            modelBuilder.Entity<Book>()
+                .Property(b => b.RowVersion)
+                .IsRowVersion();
         }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }

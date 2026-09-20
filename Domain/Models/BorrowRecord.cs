@@ -3,7 +3,7 @@
     public enum BorrowStatus
     {
         Borrowed,
-        Avilable
+        Returned
     }
     public class BorrowRecord
     {

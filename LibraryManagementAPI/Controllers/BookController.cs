@@ -45,7 +45,7 @@ namespace LibraryManagementAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook([FromForm] CreateBookDto dto, int id)
+        public async Task<IActionResult> UpdateBook([FromForm] UpdateBookDto dto, int id)
         {
             if (dto.CoverImage != null && !_allowedExtentions.Contains(Path.GetExtension(dto.CoverImage.FileName).ToLower()))
             {

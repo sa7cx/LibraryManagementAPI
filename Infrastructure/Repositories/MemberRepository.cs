@@ -25,9 +25,9 @@ namespace Infrastructure.Repositories
             return members;
         }
 
-        public Task<Member> GetById(int id)
+        public async Task<Member> GetById(int id)
         {
-            var member = _context.Members.FirstOrDefaultAsync(m => m.MemberID == id);
+            var member =await _context.Members.FirstOrDefaultAsync(m => m.MemberID == id);
             return member;
         }
 
@@ -49,5 +49,10 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Member> GetByUserID(string userId)
+        {
+            var member = await _context.Members.FirstOrDefaultAsync(m => m.userId == userId);
+            return member;
+        }
     }
 }

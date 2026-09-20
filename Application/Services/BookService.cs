@@ -87,7 +87,7 @@ namespace LibraryManagementAPI.Services
             return ApiResponse.Success("Book created successfully");
         }
 
-        public async Task<ApiResponse> Update(int id, CreateBookDto bookDto)
+        public async Task<ApiResponse> Update(int id, UpdateBookDto bookDto)
         {
             var book = await _bookRepository.GetById(id);
             if (book == null)

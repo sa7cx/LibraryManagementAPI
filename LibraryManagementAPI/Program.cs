@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using IAuthenticationService = Application.Interfaces.IServices.IAuthenticationService;
 using Application.Services;
 using Application.Common;
+using Application.Interfaces;
+using Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +30,6 @@ builder.Services.AddTransient<IMemberService, MemberService>();
 builder.Services.AddTransient<IBookService, BookService>();
 builder.Services.AddTransient<IBorrowService, BorrowService>();
 builder.Services.AddTransient<IAuthenticationService, AuthenticationSerice>();
-builder.Services.AddTransient<GenerateToken>();
 
 builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
@@ -36,6 +37,7 @@ builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<IBorrowRepository, BorrowRepository>();
 builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AppDbContext>().AddSignInManager();
 
@@ -108,8 +110,9 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.UseCors("AllowFrontEnd");
 

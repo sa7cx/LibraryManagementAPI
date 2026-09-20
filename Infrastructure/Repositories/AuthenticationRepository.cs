@@ -44,5 +44,9 @@ namespace Infrastructure.Repositories
             return _userManager.CheckPasswordAsync(user, password);
         }
 
+        public Task<ApplicationUser> GetUserById(string userId)
+        {
+            return _userManager.FindByIdAsync(userId);
+        }
     }
 }

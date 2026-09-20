@@ -3,6 +3,7 @@ using Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LibraryManagementAPI.Controllers
 {
@@ -16,14 +17,14 @@ namespace LibraryManagementAPI.Controllers
         {
             _borrowService = borrowService;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllBorrows()
         {
             var result = await _borrowService.GetAll();
             return Ok(result);
         }
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBorrowById(int id)
         {
@@ -36,8 +37,8 @@ namespace LibraryManagementAPI.Controllers
         {
             if (dto.ReturnDate <= dto.BorrowDate)
                 return BadRequest("ReturnDate cannot be less than or equal to BorrowDate");
-
-            var result = await _borrowService.Borrow(dto);
+            var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _borrowService.Borrow(dto,user);
             return Ok(result);
         }
         [Authorize]

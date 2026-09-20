@@ -14,6 +14,7 @@ namespace Application.Interfaces.IRepositories
         public Task Add(Member member);
         public Task Update(Member member);
         public Task Delete(Member member);
+        public Task<Member> GetByUserID(string userId);
 
     }
 }

@@ -8,7 +8,7 @@ namespace Application.Interfaces.IServices
     {
         public Task<ApiResponse<IEnumerable<BorrowingDetailsDto>>> GetAll();
         public Task<ApiResponse<BorrowingDetailsDto>> GetById(int id);
-        public Task<ApiResponse> Borrow(CreateBorrowingDto borrowDto);
+        public Task<ApiResponse> Borrow(CreateBorrowingDto borrowDto, string userId);
         public Task<ApiResponse> Return(int id);
     }
 }

@@ -13,6 +13,7 @@ namespace Application.Interfaces.IRepositories
     {
         public Task<IdentityResult> CreateAsync(RegisterDto registerDto);
         public Task<ApplicationUser?> GetUserByEmailAsync(string email);
+        public Task<ApplicationUser> GetUserById(string userId);
         public Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
     }
 }

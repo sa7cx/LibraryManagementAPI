@@ -13,9 +13,11 @@ namespace LibraryManagementAPI.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
+
         public AuthenticationController(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
+
         }
 
         [HttpPost("register")]
@@ -35,6 +37,18 @@ namespace LibraryManagementAPI.Controllers
         {
            var result = await _authenticationService.LoginAsync(loginDto);
            return Ok(result);
+        }
+        [HttpGet("Refresh")]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            var result = await _authenticationService.RefreshTokenAsync(refreshToken);
+            return Ok(result);
+        }
+        [HttpPost("LogOut")]
+        public async Task<IActionResult> LogOut(string refreshToken)
+        {
+            await _authenticationService.LogoutAsync(refreshToken);
+            return Ok("Logout Successful");
         }
     }
 }

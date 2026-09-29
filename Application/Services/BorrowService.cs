@@ -89,10 +89,6 @@ namespace LibraryManagementAPI.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
             }
-            catch ()
-            {
-
-            }
             catch(Exception)
             {
                 await _unitOfWork.RollbackAsync();

@@ -37,6 +37,7 @@ builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<IBorrowRepository, BorrowRepository>();
 builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AppDbContext>().AddSignInManager();

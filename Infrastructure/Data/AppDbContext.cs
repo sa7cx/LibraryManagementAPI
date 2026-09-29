@@ -2,6 +2,7 @@
 using LibraryManagementAPI.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Infrastructure.Identity;
+using Domain.Models;
 namespace LibraryManagementAPI.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
@@ -24,6 +25,7 @@ namespace LibraryManagementAPI.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<BorrowRecord> BorrowRecords { get; set; }
         public DbSet<Member> Members { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     }
 }

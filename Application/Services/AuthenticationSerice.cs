@@ -47,7 +47,7 @@ namespace Application.Services
             if (RefreshToken.ExpiresAt <= DateTime.UtcNow)
                 throw new BadRequestException("Refresh token has expired.");
             if (RefreshToken.RevokedAt is not null)
-                throw new BadRequestException("Refresh token has been revoked.");
+                return;
             RefreshToken.RevokedAt = DateTime.UtcNow;
             await _unitOfWork.SaveChangesAsync();
         }

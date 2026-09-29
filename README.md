@@ -1,300 +1,444 @@
 📚 Library Management API
 
-A RESTful API built with ASP.NET Core Web API (.NET 8) for managing a library system including books, authors, categories, members, and borrowing operations.
+<p align="center">
+  A structured RESTful backend for managing books, authors, categories, members, and borrowing operations.
+</p><p align="center">
+  <img src="https://img.shields.io/badge/.NET-8-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
+  <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white" />
+  <img src="https://img.shields.io/badge/ASP.NET%20Core-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
+  <img src="https://img.shields.io/badge/EF%20Core-8-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
+  <img src="https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" />
+</p><p align="center">
+  <img src="https://img.shields.io/badge/ASP.NET%20Identity-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
+  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" />
+</p>---
 
-The project focuses on Clean Architecture principles, separation of concerns, maintainable code, and secure authentication.
+📌 Overview
 
----
+Library Management API is a RESTful backend built with C# and ASP.NET Core for managing library operations such as books, authors, categories, members, and borrowing.
 
-🚀 Tech Stack
+The project is designed to demonstrate practical backend engineering concepts beyond basic CRUD operations.
 
-- ASP.NET Core Web API (.NET 8)
-- C#
-- Entity Framework Core
-- SQL Server
+Key Concepts
+
+- Clean Architecture-inspired structure
+- Separation of concerns
+- Service and Repository patterns
+- DTO-based API design
 - ASP.NET Core Identity
-- JWT Bearer Authentication
-- Swagger / OpenAPI
-- CORS
+- JWT Authentication
+- Business-rule validation
+- Centralized exception handling
+- Database transactions
+- Optimistic concurrency
+- Pagination
+- Soft deletion
 
 ---
 
-🏗️ Architecture
-
-The project follows a Clean Architecture-inspired structure, separating the application logic, domain models, infrastructure, and API layers.
-
-LibraryManagementAPI
-│
-├── Application
-│   ├── DTOs
-│   ├── Exceptions
-│   ├── Interfaces
-│   │   ├── IRepositories
-│   │   └── IServices
-│   ├── Services
-│   ├── .csAPIResponse
-│   ├── ApiResponseT.cs
-│   └── GenerateToken.cs
-│
-├── Domain
-│   └── Models
-│       └── Identity
-│
-├── Infrastructure
-│   ├── Data
-│   ├── Migrations
-│   └── Repositories
-│
-└── LibraryManagementAPI
-    ├── Controllers
-    ├── Middleware
-    ├── wwwroot
-    ├── Program.cs
-    └── appsettings.json
-
-Layer Responsibilities
-
-Domain
-
-- Contains the core models of the application.
-- Includes Identity-related models.
-
-Application
-
-- Contains business and application logic.
-- Defines service and repository interfaces.
-- Contains DTOs and custom exceptions.
-- Contains application response models and JWT token generation.
-
-Infrastructure
-
-- Handles database access and persistence.
-- Contains Entity Framework Core configuration, migrations, and repository implementations.
-
-API
-
-- Exposes the application through HTTP controllers.
-- Contains middleware, Swagger, CORS, authentication configuration, and application startup configuration.
-
----
-
-🔐 Authentication & Authorization
-
-The API uses ASP.NET Core Identity together with JWT Bearer Authentication.
-
-Authentication Features
-
-- User registration
-- User login
-- Password validation using ASP.NET Core Identity
-- JWT access token generation
-- Bearer token authentication
-- Role claims support
-
-Authentication Flow
-
-Client
-   │
-   ├── Register ──► Auth API ──► ASP.NET Core Identity
-   │                              │
-   │                              └── User Created
-   │
-   └── Login ────► Auth API ──► Identity validates credentials
-                                  │
-                                  └── JWT Access Token
-                                        │
-                                        ▼
-                                  Protected Endpoints
-
-For authenticated requests, the client sends the token using:
-
-Authorization: Bearer <token>
-
----
-
-⚙️ Features
+🚀 Features
 
 📚 Books
 
-- Create books
-- Retrieve books
-- Retrieve a book by ID
-- Update books
-- Delete books
-- Filter books by category or author
+- Create, retrieve, update, and delete books
+- Retrieve books by ID
+- Filter books by author or category
 - Manage book quantity
+- Pagination
+- Soft deletion
+- Validation
 - Upload book cover images
+- Supported formats: ".jpg", ".jpeg", ".png"
 
 🏷️ Authors & Categories
 
 - Full CRUD operations
-- Associate books with authors and categories
+- Book relationships
+- Author/category filtering
 
 👤 Members
 
 - Full CRUD operations
 - Manage library members
+- Connect authenticated users with member profiles
+- Track borrowing activity
 
 📖 Borrowing System
 
-- Borrow books
-- Return books
-- Decrease available quantity when borrowing
-- Increase quantity when returning
-- Prevent borrowing unavailable books
+The borrowing system handles the main library business rules:
+
+- Identify the authenticated user
+- Resolve the associated member
+- Check book availability
+- Decrease available quantity
+- Create a borrowing record
+- Execute related database operations transactionally
+- Handle concurrency conflicts
+- Restore quantity when returning a book
 
 ---
 
-🧠 Business Rules
+🏗️ Architecture
 
-The API enforces business rules such as:
+The project follows a Clean Architecture-inspired structure with a clear separation between the API, application logic, domain models, and infrastructure.
 
-- Book title is required.
-- Book title must be unique per author.
-- Book price cannot be negative.
-- Book quantity cannot be negative.
-- Books cannot be borrowed when the available quantity is zero.
-- Return date cannot be earlier than the borrow date.
+Project Structure
+```text
+LibraryManagementAPI/
+│
+├── Application/
+│   ├── DTOs/
+│   ├── Exceptions/
+│   ├── Interfaces/
+│   │   ├── IRepositories/
+│   │   └── IServices/
+│   ├── Services/
+│   ├── ApiResponse/
+│   └── GenerateToken.cs
+│
+├── Domain/
+│   ├── Models/
+│   └── Identity/
+│       └── ApplicationUser.cs
+│
+├── Infrastructure/
+│   ├── Data/
+│   ├── Migrations/
+│   └── Repositories/
+│
+├── LibraryManagementAPI/
+│   ├── Controllers/
+│   ├── Middleware/
+│   ├── wwwroot/
+│   ├── Program.cs
+│   └── appsettings.json
+│
+├── LibraryManagementAPI.slnx
+├── .gitignore
+├── .gitattributes
+└── README.md
+```
+Layer Responsibilities
 
-Business logic is handled in the Application/Services layer while controllers remain focused on handling HTTP requests and responses.
+API
+
+Responsible for the HTTP layer and application configuration.
+
+- Controllers
+- Middleware
+- Authentication configuration
+- Swagger / OpenAPI
+- CORS
+- Dependency Injection
+- Application startup
+
+Application
+
+Contains application and business logic.
+
+- DTOs
+- Services
+- Service interfaces
+- Repository interfaces
+- Exceptions
+- API response models
+- JWT token generation
+
+The Application layer works with abstractions and does not depend directly on Infrastructure implementations.
+
+Domain
+
+Contains the core models of the application.
+
+- Domain entities
+- Business models
+- Identity models
+- "ApplicationUser"
+
+The custom "ApplicationUser" is located under:
+```text
+Domain/
+└── Identity/
+    └── ApplicationUser.cs
+```
+Infrastructure
+
+Handles persistence and implementation details.
+
+- Entity Framework Core
+- SQL Server
+- Database migrations
+- Repository implementations
+- Data access
 
 ---
 
-🧩 Design Principles
+🔄 Request Flow
+
+A typical request passes through the application in the following order:
+
+Client
+  ↓
+Controller
+  ↓
+Application Service
+  ↓
+Repository Interface
+  ↓
+Repository Implementation
+  ↓
+Entity Framework Core
+  ↓
+SQL Server
+
+This separation keeps controllers focused on HTTP concerns while application services handle business logic and repositories handle persistence.
+
+---
+
+🔐 Authentication & Security
+
+Authentication is implemented using ASP.NET Core Identity and JWT Bearer Authentication.
+
+Authentication Components
+
+- Custom "ApplicationUser"
+- User registration
+- User login
+- Password validation
+- JWT access-token generation
+- Bearer authentication
+- JWT claims
+- Role claims
+- Protected endpoints
+
+Example authorization header:
+
+Authorization: Bearer <JWT_TOKEN>
+
+---
+
+💾 Transactions & Data Consistency
+
+Borrowing operations involve multiple database changes:
+
+1. Check book availability
+2. Decrease book quantity
+3. Create borrowing record
+4. Commit the transaction
+
+If an operation fails, the transaction can be rolled back to prevent inconsistent data.
+
+Begin Transaction
+      ↓
+Check Availability
+      ↓
+Decrease Quantity
+      ↓
+Create Borrow Record
+      ↓
+Commit Transaction
+
+---
+
+⚡ Optimistic Concurrency
+
+The borrowing process handles concurrent updates when multiple users attempt to borrow the same book.
+
+The project uses EF Core optimistic concurrency with a "RowVersion" concurrency token to detect conflicting updates.
+
+This helps prevent incorrect book quantities when multiple requests target the same record simultaneously.
+
+---
+
+📄 Pagination
+
+Large collections are retrieved using pagination rather than loading all records at once.
+
+Example:
+
+GET /api/books?pageNumber=1&pageSize=10
+
+---
+
+🗑️ Soft Delete
+
+Instead of permanently deleting certain records, the application can mark them as deleted.
+
+IsDeleted = true
+
+This preserves the record while excluding it from normal queries.
+
+---
+
+📏 Business Rules
+
+Examples of business rules implemented in the API:
+
+- Books cannot be borrowed when available quantity is zero.
+- Borrowing requires an authenticated user.
+- The authenticated user must have an associated member profile.
+- Book quantity is decreased after a successful borrowing operation.
+- Returning a book restores its available quantity.
+- Borrowing operations are handled transactionally.
+- Concurrent updates are detected using optimistic concurrency.
+
+---
+
+🧩 Design Patterns & Practices
 
 Repository Pattern
 
-Database access is abstracted through repository interfaces and their implementations.
+Abstracts database access behind repository interfaces and implementations.
 
-Controller
-    ↓
-Service
-    ↓
-Repository Interface
-    ↓
-Repository
-    ↓
-Entity Framework Core
-    ↓
-SQL Server
+Service Layer
+
+Keeps application and business logic outside controllers.
 
 DTOs
 
-DTOs are used to control the data exchanged between the API and clients instead of directly exposing application models.
+Controls the data exchanged between the API and clients without exposing domain models directly.
 
 Dependency Injection
 
-Services and repositories are registered and resolved using ASP.NET Core's built-in Dependency Injection system.
+Uses ASP.NET Core's built-in Dependency Injection system.
 
 Global Exception Handling
 
-A custom middleware handles unhandled exceptions and provides consistent API error responses.
+A centralized middleware handles unexpected exceptions and provides consistent API error responses.
+
+Separation of Concerns
+
+Each layer has a focused responsibility, making the application easier to maintain and extend.
+
+---
+
+🛠️ Tech Stack
+
+Technology| Purpose
+C#| Programming Language
+.NET 8| Application Framework
+ASP.NET Core Web API| REST API
+Entity Framework Core| ORM
+SQL Server| Database
+ASP.NET Core Identity| Authentication & User Management
+JWT| Authentication
+Swagger / OpenAPI| API Documentation
+Postman| API Testing
+Git / GitHub| Version Control
 
 ---
 
 🧪 API Testing
 
-The API has been tested using:
+The API can be tested using:
 
 - Swagger UI
 - Postman
 
-Tested responses include:
+Common HTTP Status Codes
 
-- "200 OK"
-- "201 Created"
-- "400 Bad Request"
-- "401 Unauthorized"
-- "404 Not Found"
-
-Authentication endpoints are also tested using JWT Bearer tokens.
+Status Code| Meaning
+"200"| OK
+"201"| Created
+"204"| No Content
+"400"| Bad Request
+"401"| Unauthorized
+"403"| Forbidden
+"404"| Not Found
+"409"| Conflict
+"500"| Internal Server Error
 
 ---
 
-📌 Swagger / OpenAPI
+📘 Swagger / OpenAPI
 
-After running the application, Swagger UI can be accessed through:
+Swagger provides interactive API documentation and allows endpoints to be tested directly from the browser.
 
-https://localhost:<port>/swagger
-
-Swagger is configured to support Bearer Authentication, allowing protected endpoints to be tested directly from the Swagger UI.
+JWT Bearer authentication is also configured for testing protected endpoints through Swagger UI.
 
 ---
 
 🌐 CORS
 
-CORS is enabled to allow frontend applications to communicate with the API during development.
+CORS is configured to allow external clients to communicate with the API.
 
 ---
 
-📦 Setup & Run
+⚙️ Getting Started
 
-1. Clone the repository
+Prerequisites
+
+- .NET 8 SDK
+- SQL Server
+- SQL Server Management Studio or another SQL client
+- Git
+
+Clone the Repository
 
 git clone https://github.com/sa7cx/LibraryManagementAPI.git
-
-2. Navigate to the project
-
 cd LibraryManagementAPI
 
-3. Restore dependencies
+Restore Dependencies
 
 dotnet restore
 
-4. Apply database migrations
+Configure the Database
+
+Update the database connection string in:
+
+appsettings.json
+
+Apply Migrations
 
 dotnet ef database update
 
-5. Run the API
+Run the API
 
 dotnet run
 
-Then open Swagger:
-
-https://localhost:<port>/swagger
+Then open Swagger using the URL displayed by ASP.NET Core.
 
 ---
 
-🔒 Configuration
+🧭 Project Status
 
-The application uses configuration files for database and authentication settings.
-
-Sensitive configuration values such as database credentials and JWT signing keys should not be committed to source control and should be provided through secure configuration mechanisms in production environments.
-
----
-
-🧭 Current Status
-
-The project is actively being developed and progressively improved toward a production-ready backend architecture.
-
-Completed
+✅ Completed
 
 - RESTful API
 - CRUD operations
 - Entity Framework Core
 - SQL Server
-- DTO-based communication
+- DTO-based API design
 - Service Layer
 - Repository Pattern
 - Dependency Injection
-- Clean Architecture structure
+- Clean Architecture-inspired structure
 - Global Exception Middleware
 - Swagger / OpenAPI
 - CORS
 - ASP.NET Core Identity
-- JWT Authentication
+- Custom "ApplicationUser"
 - User Registration
 - User Login
+- JWT Authentication
 - JWT Role Claims
-
-Planned Improvements
-
 - Pagination
-- Advanced search and filtering
-- Role-based authorization
 - Soft Delete
-- Logging and monitoring
+- Book Cover Uploads
+- Borrowing System
+- Returning Books
+- Database Transactions
+- Optimistic Concurrency
+
+🔜 Planned
+
+- Role-based authorization
+- Advanced search and filtering
+- Structured logging and monitoring
 - Refresh Tokens
+- Automated unit and integration testing
 - API versioning
 - Docker support
 - Production deployment
@@ -303,6 +447,40 @@ Planned Improvements
 
 🎯 Project Goal
 
-This project is focused on developing practical backend experience with ASP.NET Core and applying software architecture principles to a real-world REST API.
+This project was built to develop and demonstrate practical backend engineering skills using C# and ASP.NET Core.
 
-It is continuously evolving from a basic CRUD application into a more structured backend system with Clean Architecture, repository abstraction, centralized exception handling, Identity authentication, and JWT-based security.
+The goal is to go beyond basic CRUD and apply concepts such as:
+
+- Layered architecture
+- Business logic separation
+- Authentication
+- Data consistency
+- Transactions
+- Concurrency handling
+- Repository abstraction
+- Maintainable API design
+
+---
+
+👨‍💻 Author
+
+Salah Al-Din Al Ali
+
+Junior .NET Developer focused on backend development and data-driven applications.
+
+Core Technologies
+
+- C#
+- .NET
+- ASP.NET Core
+- Entity Framework Core
+- SQL Server
+- REST APIs
+- ASP.NET Core Identity
+- JWT
+
+---
+
+<p align="center">
+  Built with C# & ASP.NET Core 🚀
+</p>
